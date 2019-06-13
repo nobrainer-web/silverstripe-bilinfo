@@ -13,6 +13,16 @@ class Make extends DataObject
     private static $plural_name = 'Vehicle make';
 
     /**
+     * List of database fields. {@link DataObject::$db}
+     *
+     * @var array
+     */
+    private static $db = [
+        'Title'      => 'Varchar',
+        'URLSegment' => 'Varchar'
+    ];
+
+    /**
      * List of one-to-many relationships. {@link DataObject::$has_many}
      *
      * @var array

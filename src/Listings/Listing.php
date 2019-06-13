@@ -14,6 +14,24 @@ class Listing extends DataObject
     private static $description = 'Represents the sales/lease listing of a vehicle';
 
     /**
+     * List of database fields. {@link DataObject::$db}
+     *
+     * TODO map all relevant API fields
+     *
+     * @var array
+     */
+    private static $db = [
+        'ExternalID'           => 'Int', // "Id" field at Bilinfo,
+        'ExternalModifiedDate' => 'Datetime',
+        'ExternalCreatedDate'  => 'Datetime',
+        'ExternalDeletedDate'  => 'Datetime',
+        'VehicleId'            => 'Varchar(200)',
+        'Price'                => 'Varchar',
+        // describing fields
+        'Mileage' => 'Varchar'
+    ];
+
+    /**
      * List of one-to-one relationships. {@link DataObject::$has_one}
      *
      * @var array

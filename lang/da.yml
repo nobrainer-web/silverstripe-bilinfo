@@ -1,0 +1,6 @@
+da:
+  NobrainerWeb\Bilinfo\Listings\Listing:
+    ## TODO all fields
+    db_Price: 'Pris'
+    has_one_Dealer: 'Forhandler'
+    has_one_Make: 'Mærke'

@@ -12,6 +12,16 @@ class ListingImage extends DataObject
     private static $description = 'Represents external image belonging to a vehicle listing';
 
     /**
+     * List of database fields. {@link DataObject::$db}
+     *
+     * @var array
+     */
+    private static $db = [
+        'Title' => 'Varchar',
+        'URL'   => 'Varchar'
+    ];
+
+    /**
      * List of one-to-one relationships. {@link DataObject::$has_one}
      *
      * @var array

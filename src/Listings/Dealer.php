@@ -11,6 +11,20 @@ class Dealer extends DataObject
     private static $table_name = 'NW_BI_Dealer';
 
     /**
+     * List of database fields. {@link DataObject::$db}
+     *
+     * @var array
+     */
+    private static $db = [
+        'ExternalID'  => 'Int', // "DealerId" field at Bilinfo,
+        'Name'        => 'Varchar',
+        'StreetLine1' => 'Varchar',
+        'StreetLine2' => 'Varchar',
+        'Zip'         => 'Varchar(15)',
+        'City'        => 'Varchar',
+    ];
+
+    /**
      * List of one-to-many relationships. {@link DataObject::$has_many}
      *
      * @var array
