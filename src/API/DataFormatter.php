@@ -22,6 +22,13 @@ class DataFormatter
 
     public function output(): array
     {
-        //TODO do json decode of data
+        return $this->toArray();
+    }
+    
+    protected function toArray(): array
+    {
+        $data = json_decode($this->data, true);
+        
+        return $data['Vehicles'] ?? [];
     }
 }

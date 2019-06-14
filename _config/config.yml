@@ -1,3 +1,8 @@
 ---
 Name: nw-bilinfo
 ---
+SilverStripe\Core\Injector\Injector:
+  NobrainerWeb\Bilinfo\API\ListingsClient:
+    calls:
+      Username: [ setUsername, ['`SS_BILINFO_USER`'] ]
+      Password: [ setPassword, ['`SS_BILINFO_PASSWORD`'] ]

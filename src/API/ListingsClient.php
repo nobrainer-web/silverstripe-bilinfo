@@ -4,6 +4,7 @@
 namespace NobrainerWeb\Bilinfo\API;
 
 
+use GuzzleHttp\Client;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use SilverStripe\Control\HTTPResponse;
@@ -12,23 +13,27 @@ use SilverStripe\Core\Injector\Injectable;
 
 class ListingsClient
 {
-    use Configurable;
     use Injectable;
 
     /**
      * @var string
      */
-    protected $endpoint = 'https://gw.bilinfo.net/listingapi/api/export';
+    protected $baseUrl = 'https://gw.bilinfo.net';
 
     /**
      * @var string
      */
-    protected $username;
+    protected $endpoint = '/listingapi/api/export';
 
     /**
      * @var string
      */
-    protected $password;
+    protected $username = '';
+
+    /**
+     * @var string
+     */
+    protected $password = '';
 
     /**
      * API supports xml or json
@@ -44,7 +49,14 @@ class ListingsClient
      */
     protected $response;
 
-    public function __construct(string $username, string $password)
+    /**
+     * params set as GET variables on the request
+     *
+     * @var array
+     */
+    protected $params = [];
+
+    public function __construct(string $username = '', string $password = '')
     {
         $this->username = $username;
         $this->password = $password;
@@ -68,18 +80,33 @@ class ListingsClient
         return $this;
     }
 
-    public function get()
+    /**
+     * Gets entire response data as array
+     *
+     * @return array
+     */
+    public function get(): array
     {
-        // TODO validate any errors from request etc
         $this->request();
         $formatter = DataFormatter::create($this->response->getBody());
+        $data = $formatter->output();
 
-        return $formatter->output();
+        return $data;
     }
 
     protected function request()
     {
         // TODO do actual request to the API using Guzzle
+        $client = new Client(['base_uri' => $this->baseUrl]);
+        $this->response = $client->request('GET', $this->endpoint, [
+            'auth' => [
+                $this->username,
+                $this->password
+            ],
+            'query' => $this->params
+        ]);
+
+        return $this->response;
     }
 
     /**
@@ -97,8 +124,30 @@ class ListingsClient
         return $this;
     }
 
-    public function getDealerListings(string $dealerId)
+    /**
+     * Set dealerId in request params
+     *
+     * @param $dealerId
+     * @return ListingsClient
+     */
+    public function setDealerId($dealerId): self
     {
-        // TODO
+        $this->addParam('dealerId', $dealerId);
+
+        return $this;
+    }
+
+    /**
+     * Set GET param
+     *
+     * @param $key
+     * @param $val
+     * @return ListingsClient
+     */
+    public function addParam($key, $val): self
+    {
+        $this->params[$key] = $val;
+
+        return $this;
     }
 }

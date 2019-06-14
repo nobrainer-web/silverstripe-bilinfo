@@ -28,7 +28,7 @@ class Listing extends DataObject
         'VehicleId'            => 'Varchar(200)',
         'Price'                => 'Varchar',
         // describing fields
-        'Mileage' => 'Varchar'
+        'Mileage' => 'Varchar',
     ];
 
     /**
@@ -58,4 +58,9 @@ class Listing extends DataObject
     private static $many_many = [
         'Equipment' => Equipment::class
     ];
+
+    public function getTitle()
+    {
+        return $this->VehicleId;
+    }
 }

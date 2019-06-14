@@ -29,4 +29,14 @@ class ListingImage extends DataObject
     private static $has_one = [
         'Listing' => Listing::class
     ];
+    
+    protected function onBeforeWrite()
+    {
+        parent::onBeforeWrite();
+        
+        if(($url = $this->URL) && !$this->Title){
+            $parts = explode('/', $url);
+            $this->Title = end($parts);
+        }
+    }
 }
