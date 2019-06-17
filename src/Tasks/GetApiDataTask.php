@@ -59,10 +59,10 @@ class GetApiDataTask extends BuildTask
             return;
         }
 
+        $this->extend('onErrorReport', $this->errors);
+
         foreach ($this->errors as $err) {
             $this->log($err);
-
-            //TODO some hook which can receive errors
         }
     }
 
@@ -105,15 +105,23 @@ class GetApiDataTask extends BuildTask
                 unset($listing->Make);
                 $listing->MakeID = $makeItem->ID;
             }
-            if (($equipmentList = $listing->EquipmentList) && !empty($equipmentList)) {
-                $listing = $this->bindListingEquipment($listing, $equipment, $equipmentList);
+
+            $equipmentList = $listing->EquipmentList;
+            $pictures = $listing->Pictures;
+
+            // might update existing items, so adding relational objects should happen to the return element
+            $writtenItem = $this->writeItem($listing);
+
+            if ($equipmentList && !empty($equipmentList)) {
+                $writtenItem = $this->bindListingEquipment($writtenItem, $equipment, $equipmentList);
             }
-            if (($pictures = $listing->Pictures) && !empty($pictures)) {
-                $listing = $this->bindListingImages($listing, $images, $pictures);
+            if ($pictures && !empty($pictures)) {
+                $writtenItem = $this->bindListingImages($writtenItem, $images, $pictures);
             }
 
-            $written->push($this->writeItem($listing));
+            $written->push($writtenItem);
         }
+
 
         $this->log($written->dataClass() . ' wrote: ' . $written->count());
 
@@ -195,7 +203,9 @@ class GetApiDataTask extends BuildTask
         if ($externalID) {
             $existing = DataObject::get_one($item->ClassName, ['ExternalID' => $externalID]);
             if ($existing) {
-                return $this->updateItem($existing, $item->toMap());
+                $newData = $item->toMap();
+
+                return $this->updateItem($existing, $newData);
             }
         }
 

@@ -25,4 +25,11 @@ class Equipment extends DataObject
     private static $belongs_many_many = [
         'Listings' => Listing::class
     ];
+
+    protected function onBeforeDelete()
+    {
+        // clean up relation table
+        $this->Listings()->removeAll();
+        parent::onBeforeDelete();
+    }
 }
