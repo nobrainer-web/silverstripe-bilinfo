@@ -3,10 +3,10 @@
 
 namespace NobrainerWeb\Bilinfo\Listings;
 
-
+use NobrainerWeb\Bilinfo\Interfaces\Listing as ListingInterface;
 use SilverStripe\ORM\DataObject;
 
-class Listing extends DataObject
+class Listing extends DataObject implements ListingInterface
 {
     private static $table_name = 'NW_BI_Listing';
     private static $singular_name = 'Vehicle listing';

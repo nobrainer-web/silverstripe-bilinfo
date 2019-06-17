@@ -32,4 +32,62 @@ class Equipment extends DataObject
         $this->Listings()->removeAll();
         parent::onBeforeDelete();
     }
+
+    /**
+     * @return string|null
+     */
+    public function getLabel(): ?string
+    {
+        if(!$this->Title){
+            return null;
+        }
+
+        return _t(__CLASS__ . '.' . $this->Title, $this->getTitle());
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

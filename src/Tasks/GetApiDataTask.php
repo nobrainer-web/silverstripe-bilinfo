@@ -7,7 +7,7 @@ namespace NobrainerWeb\Bilinfo\Tasks;
 use NobrainerWeb\Bilinfo\API\DataMapper;
 use NobrainerWeb\Bilinfo\API\ListingsClient;
 use NobrainerWeb\Bilinfo\Listings\Equipment;
-use NobrainerWeb\Bilinfo\Listings\Listing;
+use NobrainerWeb\Bilinfo\Interfaces\Listing;
 use NobrainerWeb\Bilinfo\Listings\ListingImage;
 use NobrainerWeb\Bilinfo\Listings\Make;
 use SilverStripe\Control\Director;
@@ -197,15 +197,12 @@ class GetApiDataTask extends BuildTask
      */
     protected function writeItem($item): DataObject
     {
-        $externalID = $item->ExternalID ?? null;
-        // attempt to find existing item
-        if ($externalID) {
-            $existing = DataObject::get_one($item->ClassName, ['ExternalID' => $externalID]);
-            if ($existing) {
-                $newData = $item->toMap();
-
-                return $this->updateItem($existing, $newData);
-            }
+        $existingItem = null;
+        if($externalID = $item->ExternalID){
+            $existingItem = $this->handleExistingItem($item, $externalID);
+        }
+        if($existingItem){
+            return $existingItem;
         }
 
         try {
@@ -217,6 +214,25 @@ class GetApiDataTask extends BuildTask
         }
 
         return $item;
+    }
+
+    /**
+     * @param $item
+     * @param $externalID
+     * @return DataObject|null
+     */
+    protected function handleExistingItem($item, $externalID)
+    {
+        $className = DataObject::getSchema()->baseDataClass($item->ClassName);
+        $existing = $className::get()->filter(['ExternalID' => $externalID])->first();
+        // attempt to find existing item
+        if ($existing) {
+            $newData = $item->toMap();
+
+            return $this->updateItem($existing, $newData);
+        }
+
+        return null;
     }
 
     protected function updateItem($existingItem, array $data): DataObject

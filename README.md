@@ -16,3 +16,7 @@ composer require nobrainer-web/silverstripe-bilinfo
 ### DB fields in this module
 Almost all fields saved from the API data are saved as Varchar. 
 This is because pretty much everything in the json data from the API, is formatted as strings.. and we also do not now all possible values of any of the fields
+
+### TODO
+- Do a "string" comparison on pictures, equipment and makes, to avoid unessecary cleanup in `GetApiDataTask`. Just to avoid big ID column build up
+- Translations and proper strings for equipment names 

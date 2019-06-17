@@ -4,11 +4,15 @@
 namespace NobrainerWeb\Bilinfo\API;
 
 
+use NobrainerWeb\Bilinfo\Listings\CallForPriceListing;
 use NobrainerWeb\Bilinfo\Listings\Dealer;
 use NobrainerWeb\Bilinfo\Listings\Equipment;
-use NobrainerWeb\Bilinfo\Listings\Listing;
+use NobrainerWeb\Bilinfo\Listings\LeaseListing;
+use NobrainerWeb\Bilinfo\Interfaces\Listing;
 use NobrainerWeb\Bilinfo\Listings\ListingImage;
 use NobrainerWeb\Bilinfo\Listings\Make;
+use NobrainerWeb\Bilinfo\Listings\RetailPriceListing;
+use NobrainerWeb\Bilinfo\Listings\TaxFreeRetailPriceListing;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\ORM\ArrayList;
@@ -26,7 +30,22 @@ class DataMapper
     protected $data = [];
 
     private static $listing_fields_map = [
-        'Id'                 => 'ExternalID',
+        'Id'           => 'ExternalID',
+        'ModifiedDate' => 'ExternalModifiedDate',
+        'CreatedDate'  => 'ExternalCreatedDate',
+        'DeletedDate'  => 'ExternalDeletedDate',
+    ];
+
+    /**
+     * Various types a listing can be. The keys in this array are the values of the PriceType field in the API response
+     *
+     * @var array
+     */
+    private static $listing_type_map = [
+        'RetailPrice'        => RetailPriceListing::class,
+        'TaxFreeRetailPrice' => TaxFreeRetailPriceListing::class,
+        'Leasing'            => LeaseListing::class,
+        'CallForPrice'       => CallForPriceListing::class
     ];
 
     private static $dealer_fields_map = [
@@ -61,7 +80,7 @@ class DataMapper
 
         foreach ($this->data as $listing) {
             $make = $listing['Make'];
-            if(!$make){
+            if (!$make) {
                 continue;
             }
             if (!$list->find('Title', $make)) {
@@ -172,7 +191,7 @@ class DataMapper
 
     /**
      * TODO creation of various types of listings
-     * 
+     *
      * @param array $data
      * @return Listing
      */
@@ -182,17 +201,19 @@ class DataMapper
 
         // Map fields that do not have the same name locally as in the external APi
         foreach (self::config()->get('listing_fields_map') as $apiField => $localField) {
-            if ($val = $data[$apiField]) {
+            if (isset($data[$apiField]) && ($val = $data[$apiField])) {
                 $listing[$localField] = $val;
             }
         }
-        
+
         // might clash with our DB
         unset($data['Id']);
-        
-        $listing = array_merge($listing, $data);
 
-        return Listing::create($listing);
+        $listing = array_merge($listing, $data);
+        $types = self::config()->get('listing_type_map');
+        $type = $types[$listing['PriceType']] ?? \NobrainerWeb\Bilinfo\Listings\Listing::class;
+
+        return $type::create($listing);
     }
 
     /**
