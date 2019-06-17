@@ -80,7 +80,7 @@ class GetApiDataTask extends BuildTask
      * @param $data
      * @return SS_List
      */
-    protected function writeListings($data): SS_List
+    protected function writeListings(array $data): SS_List
     {
         $mapper = DataMapper::create($data);
         $listings = $mapper->mapListings();
@@ -195,13 +195,13 @@ class GetApiDataTask extends BuildTask
      * @param $item
      * @return DataObject
      */
-    protected function writeItem($item): DataObject
+    protected function writeItem(DataObject $item): DataObject
     {
         $existingItem = null;
-        if($externalID = $item->ExternalID){
+        if ($externalID = $item->ExternalID) {
             $existingItem = $this->handleExistingItem($item, $externalID);
         }
-        if($existingItem){
+        if ($existingItem) {
             return $existingItem;
         }
 
@@ -221,7 +221,7 @@ class GetApiDataTask extends BuildTask
      * @param $externalID
      * @return DataObject|null
      */
-    protected function handleExistingItem($item, $externalID)
+    protected function handleExistingItem(DataObject $item, string $externalID): ?DataObject
     {
         $className = DataObject::getSchema()->baseDataClass($item->ClassName);
         $existing = $className::get()->filter(['ExternalID' => $externalID])->first();
@@ -235,7 +235,7 @@ class GetApiDataTask extends BuildTask
         return null;
     }
 
-    protected function updateItem($existingItem, array $data): DataObject
+    protected function updateItem(DataObject $existingItem, array $data): DataObject
     {
         $existingItem->update($data);
         try {
