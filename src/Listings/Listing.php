@@ -63,4 +63,12 @@ class Listing extends DataObject implements ListingInterface
     {
         return $this->VehicleId;
     }
+
+    /**
+     * @return bool
+     */
+    public function isSold(): bool
+    {
+        return (bool)$this->ExternalDeletedDate;
+    }
 }
