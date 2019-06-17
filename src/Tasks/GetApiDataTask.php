@@ -112,16 +112,15 @@ class GetApiDataTask extends BuildTask
             // might update existing items, so adding relational objects should happen to the return element
             $writtenItem = $this->writeItem($listing);
 
-            if ($equipmentList && !empty($equipmentList)) {
+            if (!empty($equipmentList)) {
                 $writtenItem = $this->bindListingEquipment($writtenItem, $equipment, $equipmentList);
             }
-            if ($pictures && !empty($pictures)) {
+            if (!empty($pictures)) {
                 $writtenItem = $this->bindListingImages($writtenItem, $images, $pictures);
             }
 
             $written->push($writtenItem);
         }
-
 
         $this->log($written->dataClass() . ' wrote: ' . $written->count());
 
