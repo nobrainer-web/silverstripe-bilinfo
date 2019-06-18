@@ -18,8 +18,7 @@ class Make extends DataObject
      * @var array
      */
     private static $db = [
-        'Title'      => 'Varchar',
-        'URLSegment' => 'Varchar'
+        'Title' => 'Varchar'
     ];
 
     /**
