@@ -30,7 +30,7 @@ To pull down data from the BilInfo API and save it, you can use `GetApiDataTask`
 Then you would use `GetSinceDaysDataTask` every hour or so, to get latest updated API data. The `?sincedays` param is by default set 1.
 
 ### Deletion
-No listings will every be automatically deleted from the database. They will only be marked with `ExternalDeletedDate`.
+No listings will ever be automatically deleted from the database. They will only be marked with `ExternalDeletedDate`.
 
 This would give you the power to decide for yourself how long you want to keep deleted (sold listings) data.
 
