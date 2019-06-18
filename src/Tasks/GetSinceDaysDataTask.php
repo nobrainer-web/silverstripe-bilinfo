@@ -13,7 +13,7 @@ class GetSinceDaysDataTask extends GetApiDataTask
 {
     protected $title = 'Bilinfo - Get data from the API with the ?sincedays param';
 
-    private static $sincedays = 10;
+    private static $sincedays = 1;
 
     /**
      * @return array
@@ -34,12 +34,5 @@ class GetSinceDaysDataTask extends GetApiDataTask
         }
 
         return $data;
-    }
-
-    protected function cleanUp()
-    {
-        // Do nothing
-        // this task should not clean up data
-        // I know this is bad practice
     }
 }

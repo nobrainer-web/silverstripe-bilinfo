@@ -6,8 +6,10 @@ namespace NobrainerWeb\Bilinfo\Tasks;
 
 use NobrainerWeb\Bilinfo\API\DataMapper;
 use NobrainerWeb\Bilinfo\API\ListingsClient;
+use NobrainerWeb\Bilinfo\Listings\Dealer;
 use NobrainerWeb\Bilinfo\Listings\Equipment;
 use NobrainerWeb\Bilinfo\Interfaces\Listing;
+use NobrainerWeb\Bilinfo\Listings\Listing as ListingDataObject;
 use NobrainerWeb\Bilinfo\Listings\ListingImage;
 use NobrainerWeb\Bilinfo\Listings\Make;
 use SilverStripe\Control\Director;
@@ -26,6 +28,23 @@ class GetApiDataTask extends BuildTask
      * @var array
      */
     protected $errors = [];
+
+    /**
+     * Specify for each model which field is checked, for an already existing item
+     * For example on Listings, ExternalID field is used to determine if we write a new record, or simply update the existing one with corresponding ExternalID
+     * On other models such as Make, it would simply be the Title field that is used to check, if a Make with that title already exists
+     * 
+     * (if API items all had an ID that would of course be much better)
+     *
+     * @config array
+     */
+    private static $unique_field_identifiers = [
+        ListingDataObject::class => 'ExternalID',
+        Dealer::class            => 'ExternalID',
+        Make::class              => 'Title',
+        ListingImage::class      => 'URL',
+        Equipment::class         => 'Title'
+    ];
 
     public function run($request)
     {
@@ -81,9 +100,7 @@ class GetApiDataTask extends BuildTask
      */
     protected function cleanUp()
     {
-        Make::get()->removeAll();
-        ListingImage::get()->removeAll();
-        Equipment::get()->removeAll();
+        // You can use this to clean something before writing new data to the DB
     }
 
     /**
@@ -232,8 +249,9 @@ class GetApiDataTask extends BuildTask
     protected function writeItem(DataObject $item): DataObject
     {
         $existingItem = null;
-        if ($externalID = $item->ExternalID) {
-            $existingItem = $this->handleExistingItem($item, $externalID);
+        $uniqueField = $this->getUniqueIdentifier($item);
+        if (($uniqueFieldValue = $item->{$uniqueField}) && $uniqueField) {
+            $existingItem = $this->handleExistingItem($item, $uniqueField, $uniqueFieldValue);
         }
         if ($existingItem) {
             return $existingItem;
@@ -252,13 +270,14 @@ class GetApiDataTask extends BuildTask
 
     /**
      * @param $item
-     * @param $externalID
+     * @param $field
+     * @param $uniqueFieldValue
      * @return DataObject|null
      */
-    protected function handleExistingItem(DataObject $item, string $externalID): ?DataObject
+    protected function handleExistingItem(DataObject $item, string $field, string $uniqueFieldValue): ?DataObject
     {
         $className = DataObject::getSchema()->baseDataClass($item->ClassName);
-        $existing = $className::get()->filter(['ExternalID' => $externalID])->first();
+        $existing = $className::get()->filter([$field => $uniqueFieldValue])->first();
         // attempt to find existing item
         if ($existing) {
             $newData = $item->toMap();
@@ -297,6 +316,21 @@ class GetApiDataTask extends BuildTask
         }
 
         return $existingItem;
+    }
+
+    /**
+     * @param DataObject $model
+     * @return string|null
+     */
+    protected function getUniqueIdentifier(DataObject $model): ?string
+    {
+        $identifiers = self::config()->get('unique_field_identifiers');
+        $className = DataObject::getSchema()->baseDataClass($model);
+        if (isset($identifiers[$className])) {
+            return $identifiers[$className];
+        }
+
+        return null;
     }
 
     protected function log($msg)
