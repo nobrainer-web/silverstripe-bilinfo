@@ -43,6 +43,16 @@ da:
     db_Height: 'Height'
     db_BodyType: 'BodyType'
     db_Comment: 'Comment'
+  NobrainerWeb\Bilinfo\Listings\LeaseListing:
+    db_LeasingType: 'LeasingType'
+    db_LeasingDuration: 'LeasingDuration'
+    db_LeasingDisclaimer: 'LeasingDisclaimer'
+    db_LeasingDownPayment: 'LeasingDownPayment'
+    db_LeasingTotalPayment: 'LeasingTotalPayment'
+    db_LeasingResidualValue: 'LeasingResidualValue'
+    db_LeasingYearlyMileage: 'LeasingYearlyMileage'
+    db_LeasingIncludesInsurance: 'LeasingIncludesInsurance'
+    db_LeasingServiceAndMaintenance: 'LeasingServiceAndMaintenance'
   NobrainerWeb\Bilinfo\Listings\Equipment:
     ABSBrakes: 'ABS Bremser'
     Aircondition: 'Aircondition'
