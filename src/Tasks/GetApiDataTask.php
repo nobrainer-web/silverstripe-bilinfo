@@ -29,16 +29,7 @@ class GetApiDataTask extends BuildTask
 
     public function run($request)
     {
-        $client = ListingsClient::create();
-        $data = [];
-        try {
-            $data = $client->get();
-        } catch (\Exception $e) {
-            $this->log('ERROR ON DATA FETCH: ' . $e->getMessage());
-            $this->extend('onFailedDataFetch', $e);
-
-            return;
-        }
+        $data = $this->fetchData();
 
         if (empty($data)) {
             $this->log('NO DATA');
@@ -51,6 +42,25 @@ class GetApiDataTask extends BuildTask
         $written = $this->writeListings($data);
 
         $this->reportErrors();
+    }
+
+    /**
+     * @return array
+     */
+    protected function fetchData(): array
+    {
+        $client = ListingsClient::create();
+        $data = [];
+        try {
+            $data = $client->get();
+        } catch (\Exception $e) {
+            $this->log('ERROR ON DATA FETCH: ' . $e->getMessage());
+            $this->extend('onFailedDataFetch', $e);
+
+            return $data;
+        }
+
+        return $data;
     }
 
     protected function reportErrors()
@@ -267,10 +277,12 @@ class GetApiDataTask extends BuildTask
     protected function updateItem(DataObject $existingItem, array $data): DataObject
     {
         // Compare Modified date to know if we want to update or not
-        if($extModified = $data['ModifiedDate'] ?? null){ // check if it has a ModifiedDate field
+        $extModified = $data['ModifiedDate'] ?? null;
+        if ($extModified) { // check if it has a ModifiedDate field
             $extModified = new \DateTime($extModified);
             $localModified = new \DateTime($existingItem->ExternalModifiedDate);
-            if($extModified <= $localModified){
+
+            if ($extModified <= $localModified) {
                 return $existingItem;
             }
         }

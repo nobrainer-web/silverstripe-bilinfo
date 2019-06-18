@@ -150,4 +150,15 @@ class ListingsClient
 
         return $this;
     }
+
+    /**
+     * @param int $sincedays
+     * @return ListingsClient
+     */
+    public function setSinceDays(int $sincedays): self
+    {
+        $this->addParam('sincedays', $sincedays);
+
+        return $this;
+    }
 }

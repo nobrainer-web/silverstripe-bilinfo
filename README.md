@@ -19,4 +19,5 @@ This is because pretty much everything in the json data from the API, is formatt
 
 ### TODO
 - Do a "string" comparison on pictures, equipment and makes, to avoid unessecary cleanup in `GetApiDataTask`. Just to avoid big ID column build up
-- Translations and proper strings for equipment names 
+- Translations and proper strings for equipment names
+- Clean up Listing_Equipment relation table when Equipment is deleted 

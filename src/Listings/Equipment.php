@@ -28,8 +28,9 @@ class Equipment extends DataObject
 
     protected function onBeforeDelete()
     {
-        // clean up relation table
-        $this->Listings()->removeAll();
+        // TODO clean up relation table
+        // this somehow gives a db lock
+        //$this->Listings()->removeAll();
         parent::onBeforeDelete();
     }
 
