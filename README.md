@@ -13,7 +13,17 @@ composer require nobrainer-web/silverstripe-bilinfo
 - PHP 7.3 (for better json_encode error handling)
 - A user at Bilinfo
 
-### DB fields in this module
+### Build Tasks
+To pull down data from the BilInfo API and save it, you can use `GetApiDataTask`. This task should probably be run as a cron job, once a day.
+
+Then you would use `GetSinceDaysDataTask` every hour or so, to get latest updated API data. The `?sincedays` param is by default set 1.
+
+### Deletion
+No listings will every be automatically deleted from the database. They will only be marked with `ExternalDeletedDate`.
+
+This would give you the power to decide for yourself how long you want to keep deleted (sold listings) data.
+
+### A note on DB fields in this module
 Almost all fields saved from the API data are saved as Varchar. 
 This is because pretty much everything in the json data from the API, is formatted as strings.. and we also do not now all possible values of any of the fields
 
