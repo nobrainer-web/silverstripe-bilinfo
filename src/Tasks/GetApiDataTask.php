@@ -259,6 +259,11 @@ class GetApiDataTask extends BuildTask
         return null;
     }
 
+    /**
+     * @param DataObject $existingItem
+     * @param array      $data
+     * @return DataObject
+     */
     protected function updateItem(DataObject $existingItem, array $data): DataObject
     {
         $existingItem->update($data);
