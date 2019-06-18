@@ -107,7 +107,7 @@ class GetApiDataTask extends BuildTask
      * @param $data
      * @return SS_List
      */
-    protected function writeListings(array $data): SS_List
+    public function writeListings(array $data): SS_List
     {
         $mapper = DataMapper::create($data);
         $listings = $mapper->mapListings();
