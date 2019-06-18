@@ -13,6 +13,17 @@ composer require nobrainer-web/silverstripe-bilinfo
 - PHP 7.3 (for better json_encode error handling)
 - A user at Bilinfo
 
+### API Credentials
+The BilInfo API requires a username and password. You must set these in `.env` with these variables:
+
+- **SS_BILINFO_USER**
+- **SS_BILINFO_PASSWORD**
+
+Example:
+
+- **SS_BILINFO_USER='demo'**
+- **SS_BILINFO_PASSWORD='ocfB6XzF73'**
+
 ### Build Tasks
 To pull down data from the BilInfo API and save it, you can use `GetApiDataTask`. This task should probably be run as a cron job, once a day.
 
