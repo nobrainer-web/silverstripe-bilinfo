@@ -90,3 +90,9 @@ da:
     TripComputer: 'TripComputer'
     VelourSeats: 'VelourSeats'
     XenonLight: 'XenonLight'
+  NobrainerWeb\Bilinfo\Listings\Dealer:
+    db_Name: 'Navn'
+    db_StreetLine1: 'Vejnavn'
+    db_StreetLine2: 'Vejnavn'
+    db_Zip: 'Postnr.'
+    db_City: 'By'
