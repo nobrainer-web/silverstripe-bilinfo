@@ -97,14 +97,8 @@ class GetApiDataTask extends BuildTask
         foreach ($listings as $listing) {
             // all regular fields have been mapped to the object
             // now find any relations
-            if (($dealerId = $listing->DealerId) && ($dealer = $dealers->find('ExternalID', $dealerId))) {
-                unset($listing->DealerId);
-                $listing->DealerID = $dealer->ID;
-            }
-            if (($make = $listing->Make) && ($makeItem = $makes->find('Title', $make))) {
-                unset($listing->Make);
-                $listing->MakeID = $makeItem->ID;
-            }
+            $this->bindListingDealer($listing, $dealers);
+            $this->bindListingMake($listing, $makes);
 
             $equipmentList = $listing->EquipmentList;
             $pictures = $listing->Pictures;
@@ -125,6 +119,36 @@ class GetApiDataTask extends BuildTask
         $this->log($written->dataClass() . ' wrote: ' . $written->count());
 
         return $written;
+    }
+
+    /**
+     * @param Listing $listing
+     * @param SS_List $dealers
+     * @return Listing
+     */
+    protected function bindListingDealer(Listing $listing, SS_List $dealers): Listing
+    {
+        if (($dealerId = $listing->DealerId) && ($dealer = $dealers->find('ExternalID', $dealerId))) {
+            unset($listing->DealerId);
+            $listing->DealerID = $dealer->ID;
+        }
+
+        return $listing;
+    }
+
+    /**
+     * @param Listing $listing
+     * @param SS_List $makes
+     * @return Listing
+     */
+    protected function bindListingMake(Listing $listing, SS_List $makes): Listing
+    {
+        if (($make = $listing->Make) && ($makeItem = $makes->find('Title', $make))) {
+            unset($listing->Make);
+            $listing->MakeID = $makeItem->ID;
+        }
+
+        return $listing;
     }
 
     /**
