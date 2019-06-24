@@ -9,6 +9,8 @@ use SilverStripe\ORM\DataObject;
 class LeaseListing extends Listing implements ListingInterface
 {
     private static $table_name = 'NW_BI_LeaseListing';
+    private static $singular_name = 'Lease listing';
+    private static $plural_name = 'Lease listings';
 
     /**
      * List of database fields. {@link DataObject::$db}

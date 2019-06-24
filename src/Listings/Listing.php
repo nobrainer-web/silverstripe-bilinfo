@@ -4,6 +4,8 @@
 namespace NobrainerWeb\Bilinfo\Listings;
 
 use NobrainerWeb\Bilinfo\Interfaces\Listing as ListingInterface;
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\Forms\DropdownField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Filters\ExactMatchFilter;
 use SilverStripe\ORM\Filters\PartialMatchFilter;
@@ -108,6 +110,7 @@ class Listing extends DataObject implements ListingInterface
         'Year'         => 'Year',
         'Make.Title'   => 'Make',
         'Dealer.Title' => 'Dealer',
+        'getTypeName'  => 'Type',
     ];
 
     /**
@@ -120,7 +123,32 @@ class Listing extends DataObject implements ListingInterface
         'DealerID'   => ExactMatchFilter::class,
         'MakeID'     => ExactMatchFilter::class,
         'Year'       => ExactMatchFilter::class,
+        'ClassName'  => ExactMatchFilter::class
     ];
+
+    /**
+     * @return \SilverStripe\ORM\Search\SearchContext
+     */
+    public function getDefaultSearchContext()
+    {
+        $context = parent::getDefaultSearchContext();
+        $fields = $context->getFields();
+
+        // set proper human readable values for ClassName filter field
+        /** @var DropdownField $classNameField */
+        if($classNameField = $fields->dataFieldByName('ClassName')){
+            $src = $classNameField->getSource();
+            $classes = ClassInfo::getValidSubClasses(__CLASS__);
+
+            foreach ($classes as $className){
+                $single = $className::singleton();
+                $src[$className] = $single->i18n_singular_name();
+            }
+            $classNameField->setSource($src);
+        }
+
+        return $context;
+    }
 
     /***
      * @return string
@@ -142,5 +170,13 @@ class Listing extends DataObject implements ListingInterface
     public function isSold(): bool
     {
         return (bool)$this->ExternalDeletedDate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypeName(): string
+    {
+        return $this->i18n_singular_name();
     }
 }
