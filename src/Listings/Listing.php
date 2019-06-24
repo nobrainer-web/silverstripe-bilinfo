@@ -5,6 +5,8 @@ namespace NobrainerWeb\Bilinfo\Listings;
 
 use NobrainerWeb\Bilinfo\Interfaces\Listing as ListingInterface;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\Filters\ExactMatchFilter;
+use SilverStripe\ORM\Filters\PartialMatchFilter;
 
 class Listing extends DataObject implements ListingInterface
 {
@@ -97,9 +99,41 @@ class Listing extends DataObject implements ListingInterface
         'Equipment' => Equipment::class
     ];
 
-    public function getTitle()
+    /**
+     * @var array
+     */
+    private static $summary_fields = [
+        'Model'        => 'Model',
+        'Variant'      => 'Variant',
+        'Year'         => 'Year',
+        'Make.Title'   => 'Make',
+        'Dealer.Title' => 'Dealer',
+    ];
+
+    /**
+     * @var array
+     */
+    private static $searchable_fields = [
+        'ExternalID' => ExactMatchFilter::class,
+        'Model'      => PartialMatchFilter::class,
+        'Variant'    => PartialMatchFilter::class,
+        'DealerID'   => ExactMatchFilter::class,
+        'MakeID'     => ExactMatchFilter::class,
+        'Year'       => ExactMatchFilter::class,
+    ];
+
+    /***
+     * @return string
+     */
+    public function getTitle(): string
     {
-        return $this->VehicleId;
+        $title = $this->Model ?? parent::getTitle();
+
+        if ($this->Make()->exists()) {
+            $title .= ' - ' . $this->Make()->getTitle();
+        }
+
+        return $title;
     }
 
     /**
