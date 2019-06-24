@@ -8,6 +8,7 @@ use NobrainerWeb\Bilinfo\Listings\Access\ListingPermissions;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\ORM\Filters\ExactMatchFilter;
 use SilverStripe\ORM\Filters\PartialMatchFilter;
 use SilverStripe\Security\PermissionProvider;
@@ -15,7 +16,7 @@ use SilverStripe\Security\PermissionProvider;
 class Listing extends DataObject implements ListingInterface, PermissionProvider
 {
     use ListingPermissions;
-    
+
     private static $table_name = 'NW_BI_Listing';
     private static $singular_name = 'Vehicle listing';
     private static $plural_name = 'Vehicle listings';
@@ -109,12 +110,13 @@ class Listing extends DataObject implements ListingInterface, PermissionProvider
      * @var array
      */
     private static $summary_fields = [
-        'Model'        => 'Model',
-        'Variant'      => 'Variant',
-        'Year'         => 'Year',
-        'Make.Title'   => 'Make',
-        'Dealer.Title' => 'Dealer',
-        'getTypeName'  => 'Type',
+        'getSummaryImages' => 'Image',
+        'Model'            => 'Model',
+        'Variant'          => 'Variant',
+        'Year'             => 'Year',
+        'Make.Title'       => 'Make',
+        'Dealer.Title'     => 'Dealer',
+        'getTypeName'      => 'Type',
     ];
 
     /**
@@ -203,5 +205,13 @@ class Listing extends DataObject implements ListingInterface, PermissionProvider
     public function getTypeName(): string
     {
         return $this->i18n_singular_name();
+    }
+
+    /**
+     * @return DBHTMLText
+     */
+    public function getSummaryImages(): DBHTMLText
+    {
+        return $this->customise(['Image' => $this->ListingImages()->first()])->renderWith(__NAMESPACE__ . '/SummaryImage');
     }
 }
