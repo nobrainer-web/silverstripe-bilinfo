@@ -40,3 +40,5 @@ This is because pretty much everything in the json data from the API, is formatt
 
 ### TODO
 - Translations and proper strings for equipment names
+- Support for Video/360 images
+- Support to output other sizes of listing image urls
