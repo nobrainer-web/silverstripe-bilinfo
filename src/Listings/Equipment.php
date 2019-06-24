@@ -10,7 +10,7 @@ use SilverStripe\ORM\DataObject;
 class Equipment extends DataObject
 {
     use ListingPermissions;
-    
+
     private static $table_name = 'NW_BI_Equipment';
     private static $singular_name = 'Vehicle equipment';
     private static $plural_name = 'Vehicle equipment';
@@ -24,6 +24,13 @@ class Equipment extends DataObject
     private static $db = [
         'Title' => 'Varchar'
     ];
+
+    private static $summary_fields = [
+        'Label',
+        'Title',
+    ];
+
+    private static $searchable_fields = ['Title'];
 
     private static $belongs_many_many = [
         'Listings' => Listing::class
@@ -41,7 +48,7 @@ class Equipment extends DataObject
      */
     public function getLabel(): ?string
     {
-        if(!$this->Title){
+        if (!$this->Title) {
             return null;
         }
 
