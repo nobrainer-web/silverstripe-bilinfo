@@ -4,14 +4,18 @@
 namespace NobrainerWeb\Bilinfo\Listings;
 
 use NobrainerWeb\Bilinfo\Interfaces\Listing as ListingInterface;
+use NobrainerWeb\Bilinfo\Listings\Access\ListingPermissions;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Filters\ExactMatchFilter;
 use SilverStripe\ORM\Filters\PartialMatchFilter;
+use SilverStripe\Security\PermissionProvider;
 
-class Listing extends DataObject implements ListingInterface
+class Listing extends DataObject implements ListingInterface, PermissionProvider
 {
+    use ListingPermissions;
+    
     private static $table_name = 'NW_BI_Listing';
     private static $singular_name = 'Vehicle listing';
     private static $plural_name = 'Vehicle listings';
@@ -136,11 +140,11 @@ class Listing extends DataObject implements ListingInterface
 
         // set proper human readable values for ClassName filter field
         /** @var DropdownField $classNameField */
-        if($classNameField = $fields->dataFieldByName('ClassName')){
+        if ($classNameField = $fields->dataFieldByName('ClassName')) {
             $src = $classNameField->getSource();
             $classes = ClassInfo::getValidSubClasses(__CLASS__);
 
-            foreach ($classes as $className){
+            foreach ($classes as $className) {
                 $single = $className::singleton();
                 $src[$className] = $single->i18n_singular_name();
             }
@@ -148,6 +152,27 @@ class Listing extends DataObject implements ListingInterface
         }
 
         return $context;
+    }
+
+    /**
+     * @return array
+     */
+    public function providePermissions()
+    {
+        return array(
+            'BI_LISTING_CREATE' => [
+                'name'     => 'Create a vehicle listing',
+                'category' => 'Bil Info'
+            ],
+            'BI_LISTING_EDIT'   => [
+                'name'     => 'Edit a vehicle listing',
+                'category' => 'Bil Info',
+            ],
+            'BI_LISTING_DELETE' => [
+                'name'     => 'Delete a vehicle listing',
+                'category' => 'Bil Info',
+            ]
+        );
     }
 
     /***

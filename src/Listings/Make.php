@@ -4,10 +4,13 @@
 namespace NobrainerWeb\Bilinfo\Listings;
 
 
+use NobrainerWeb\Bilinfo\Listings\Access\ListingPermissions;
 use SilverStripe\ORM\DataObject;
 
 class Make extends DataObject
 {
+    use ListingPermissions;
+    
     private static $table_name = 'NW_BI_Make';
     private static $singular_name = 'Vehicle make';
     private static $plural_name = 'Vehicle make';

@@ -4,10 +4,13 @@
 namespace NobrainerWeb\Bilinfo\Listings;
 
 
+use NobrainerWeb\Bilinfo\Listings\Access\ListingPermissions;
 use SilverStripe\ORM\DataObject;
 
 class ListingImage extends DataObject
 {
+    use ListingPermissions;
+    
     private static $table_name = 'NW_BI_ListingImage';
     private static $description = 'Represents external image belonging to a vehicle listing';
 
