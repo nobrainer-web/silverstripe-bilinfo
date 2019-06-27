@@ -182,11 +182,15 @@ class Listing extends DataObject implements ListingInterface, PermissionProvider
      */
     public function getTitle(): string
     {
+        if($title = $this->getField('Title')){
+            return $title;
+        }
+
         $title = $this->Make()->exists() ? $this->Make()->Title : '';
         $title .= ' ' . $this->Model . ' ' . $this->Variant . ' ' . $this->Year;
-        
+
         $this->extend('updateTitle', $title);
-        
+
         return $title;
     }
 
