@@ -33,6 +33,8 @@ class GetSinceDaysDataTask extends GetApiDataTask
             return $data;
         }
 
+        $this->extend('onAfterFetchData', $data);
+
         return $data;
     }
 }

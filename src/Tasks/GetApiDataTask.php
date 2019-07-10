@@ -33,7 +33,7 @@ class GetApiDataTask extends BuildTask
      * Specify for each model which field is checked, for an already existing item
      * For example on Listings, ExternalID field is used to determine if we write a new record, or simply update the existing one with corresponding ExternalID
      * On other models such as Make, it would simply be the Title field that is used to check, if a Make with that title already exists
-     * 
+     *
      * (if API items all had an ID that would of course be much better)
      *
      * @config array
@@ -61,6 +61,8 @@ class GetApiDataTask extends BuildTask
         $written = $this->writeListings($data);
 
         $this->reportErrors();
+
+        $this->extend('onFinishedRun', $written, $data);
     }
 
     /**
@@ -78,6 +80,8 @@ class GetApiDataTask extends BuildTask
 
             return $data;
         }
+
+        $this->extend('onAfterFetchData', $data);
 
         return $data;
     }
@@ -121,6 +125,8 @@ class GetApiDataTask extends BuildTask
         $makes = $this->writeItems($mapper->mapMakes());
         $equipment = $this->writeItems($mapper->mapEquipment());
 
+        $this->extend('onBeforeWriteListings', $listings);
+
         foreach ($listings as $listing) {
             // all regular fields have been mapped to the object
             // now find any relations
@@ -144,6 +150,8 @@ class GetApiDataTask extends BuildTask
         }
 
         $this->log(DataObject::getSchema()->baseDataClass($written->dataClass()) . ' wrote: ' . $written->count());
+
+        $this->extend('onAfterWriteListings', $written);
 
         return $written;
     }
@@ -257,6 +265,8 @@ class GetApiDataTask extends BuildTask
             return $existingItem;
         }
 
+        $this->extend('onBeforeWriteItem', $item);
+
         try {
             $item->write();
             $this->log('Wrote item ' . $item->ClassName . ' ' . $item->getTitle());
@@ -264,6 +274,8 @@ class GetApiDataTask extends BuildTask
             $error = 'Error with' . $item->ClassName . ' , exception message: ' . $e->getMessage() . '. Data: ' . json_encode($item->toMap());
             $this->errors[] = $error;
         }
+
+        $this->extend('onAfterWriteItem', $item);
 
         return $item;
     }
@@ -307,6 +319,9 @@ class GetApiDataTask extends BuildTask
         }
 
         $existingItem->update($data);
+
+        $this->extend('onBeforeUpdateItem', $item);
+
         try {
             $existingItem->write();
             $this->log('Updated item ' . $existingItem->ClassName . ' ' . $existingItem->getTitle());
@@ -314,6 +329,8 @@ class GetApiDataTask extends BuildTask
             $error = 'Error with' . $item->ClassName . '(ID ' . $item->ID . ') , exception message: ' . $e->getMessage();
             $this->errors[] = $error;
         }
+
+        $this->extend('onAfterUpdateItem', $item);
 
         return $existingItem;
     }
