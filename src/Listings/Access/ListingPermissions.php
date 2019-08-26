@@ -22,7 +22,7 @@ trait ListingPermissions {
      */
     public function canCreate($member = null, $context = array())
     {
-        return Permission::checkMember($member, 'REDIRECTEDURLS_CREATE');
+        return Permission::checkMember($member, 'BI_LISTING_CREATE');
     }
 
     /**
@@ -31,7 +31,7 @@ trait ListingPermissions {
      */
     public function canEdit($member = null)
     {
-        return Permission::checkMember($member, 'REDIRECTEDURLS_EDIT');
+        return Permission::checkMember($member, 'BI_LISTING_EDIT');
     }
 
     /**
@@ -40,6 +40,6 @@ trait ListingPermissions {
      */
     public function canDelete($member = null)
     {
-        return Permission::checkMember($member, 'REDIRECTEDURLS_DELETE');
+        return Permission::checkMember($member, 'BI_LISTING_DELETE');
     }
 }
