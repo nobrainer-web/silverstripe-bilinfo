@@ -35,8 +35,7 @@ No listings will ever be automatically deleted from the database. They will only
 This would give you the power to decide for yourself how long you want to keep deleted (sold listings) data.
 
 ### A note on DB fields in this module
-Almost all fields saved from the API data are saved as Varchar. 
-This is because pretty much everything in the json data from the API, is formatted as strings.. and we also do not now all possible values of any of the fields
+All fields from the API are strings. Some of these fields are mapped to INT instead.
 
 ### TODO
 - Translations and proper strings for equipment names
