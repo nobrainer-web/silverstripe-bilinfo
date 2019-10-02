@@ -194,14 +194,24 @@ class GetApiDataTask extends BuildTask
      */
     protected function bindListingImages(Listing $listing, SS_List $images, array $original): Listing
     {
-        $filtered = $images->filterAny('URL', $original);
+        $filtered = $images->filterAny('URL', $original)->column('ID');
 
-        if (!$filtered->exists()) {
+        if (empty($filtered)) {
             return $listing;
         }
 
+        // clear existing images
+        $existingItems = ListingImage::get()->filter('ListingID', $listing->ID)->excludeAny('ID', $filtered);
+        if ($existingItems->exists()) {
+            // first delete items
+            foreach ($existingItems as $existingImage) {
+                $existingImage->delete();
+            }
+        }
+
+        // add new images
         foreach ($filtered as $image) {
-            $listing->ListingImages()->add($image);
+            $listing->ListingImages()->add((int)$image);
         }
 
         return $listing;
