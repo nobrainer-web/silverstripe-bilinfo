@@ -42,7 +42,6 @@ class GetApiDataTask extends BuildTask
         ListingDataObject::class => 'ExternalID',
         Dealer::class            => 'ExternalID',
         Make::class              => 'Title',
-        ListingImage::class      => 'URL',
         Equipment::class         => 'Title'
     ];
 
