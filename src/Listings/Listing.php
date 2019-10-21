@@ -24,6 +24,20 @@ class Listing extends DataObject implements ListingInterface, PermissionProvider
     private static $default_sort = 'ExternalDeletedDate, Make, Model';
 
     /**
+     * Whether or not sold listings will be automatically cleaned up (deleted)
+     *
+     * @var bool
+     */
+    private static $enabled_automatic_cleanup = true;
+
+    /**
+     * If automatic deletion is true, this is the amount of days we will wait with deleting the sold listing
+     *
+     * @var int
+     */
+    private static $deletion_after_days_sold = 21; // 3 weeks
+
+    /**
      * List of database fields. {@link DataObject::$db}
      *
      * NOTE: Some of these fields might be of INT datatype, but the api itself only returns all values as strings. These castings to INT are assumptions
@@ -217,5 +231,27 @@ class Listing extends DataObject implements ListingInterface, PermissionProvider
     public function getSummaryImages(): DBHTMLText
     {
         return $this->customise(['Image' => $this->ListingImages()->first()])->renderWith(__NAMESPACE__ . '/SummaryImage');
+    }
+
+    /**
+     * determine if this listing may be deleted, as it has been marked as sold for a long time
+     *
+     * @return bool
+     */
+    public function canBeAutomaticallyDeleted(): bool
+    {
+        if (!$this->isSold() || !self::config()->get('enabled_automatic_cleanup')) {
+            return false;
+        }
+        $result = false;
+        $sold = new \DateTime($this->ExternalDeletedDate);
+        $days = self::config()->get('deletion_after_days_sold');
+        $today = new \DateTime();
+        $deadline = $today->sub(new \DateInterval('P' . $days . 'D'));
+        $result = $sold <= $deadline;
+
+        $this->extend('updateCanBeAutomaticallyDeleted', $result);
+
+        return $result;
     }
 }
