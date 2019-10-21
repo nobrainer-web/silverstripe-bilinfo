@@ -21,7 +21,7 @@ class Listing extends DataObject implements ListingInterface, PermissionProvider
     private static $singular_name = 'Vehicle listing';
     private static $plural_name = 'Vehicle listings';
     private static $description = 'Represents the sales/lease listing of a vehicle';
-    private static $default_sort = 'Make, Model';
+    private static $default_sort = 'ExternalDeletedDate, Make, Model';
 
     /**
      * List of database fields. {@link DataObject::$db}
@@ -183,7 +183,7 @@ class Listing extends DataObject implements ListingInterface, PermissionProvider
      */
     public function getTitle(): string
     {
-        if($title = $this->getField('Title')){
+        if ($title = $this->getField('Title')) {
             return $title;
         }
 
