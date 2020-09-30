@@ -317,15 +317,15 @@ class GetApiDataTask extends BuildTask
     protected function updateItem(DataObject $existingItem, array $data): DataObject
     {
         // Compare Modified date to know if we want to update or not
-        $extModified = $data['ModifiedDate'] ?? null;
-        if ($extModified) { // check if it has a ModifiedDate field
-            $extModified = new \DateTime($extModified);
-            $localModified = new \DateTime($existingItem->ExternalModifiedDate);
-
-            if ($extModified <= $localModified) {
-                return $existingItem;
-            }
-        }
+//        $extModified = $data['ModifiedDate'] ?? null;
+//        if ($extModified) { // check if it has a ModifiedDate field
+//            $extModified = new \DateTime($extModified);
+//            $localModified = new \DateTime($existingItem->ExternalModifiedDate);
+//
+//            if ($extModified <= $localModified) {
+//                return $existingItem;
+//            }
+//        }
 
         $existingItem->update($data);
 

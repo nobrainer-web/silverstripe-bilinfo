@@ -20,6 +20,7 @@ class LeaseListing extends Listing implements ListingInterface
     private static $db = [
         'LeasingType'                  => 'Varchar',
         'LeasingDuration'              => 'Varchar',
+        'LeasingAudience'              => 'Varchar',
         'LeasingDisclaimer'            => 'Varchar',
         'LeasingDownPayment'           => 'Varchar',
         'LeasingTotalPayment'          => 'Varchar',
