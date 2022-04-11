@@ -2,7 +2,6 @@ da:
   NobrainerWeb\Bilinfo\Listings\Listing:
     has_one_Dealer: 'Forhandler'
     has_one_Make: 'Mærke'
-
     db_Price: 'Pris'
     db_Mileage: 'Km'
     db_Year: 'Årgang'
